@@ -1,0 +1,5 @@
+---
+- name: Print message from kafka broker role
+  debug:
+    msg: "This is kafka_broker role in components"
+# tasks file for dmytrokrynytsyn/components/roles/kafka_broker

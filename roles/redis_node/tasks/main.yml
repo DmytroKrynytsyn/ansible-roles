@@ -1,0 +1,5 @@
+---
+- name: Print message from redis role
+  debug:
+    msg: "This is redis node role in components"
+# tasks file for dmytrokrynytsyn/components/roles/redis_node
