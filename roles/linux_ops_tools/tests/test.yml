@@ -1,0 +1,5 @@
+---
+- hosts: localhost
+  remote_user: root
+  roles:
+    - dmytrokrynytsyn/components/roles/linux_ops_tools

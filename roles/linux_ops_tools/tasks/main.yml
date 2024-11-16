@@ -1,0 +1,11 @@
+---
+- name: Initial update yum cache
+  yum:
+    update_cache: yes
+
+- name: Add initial dependencies
+  yum:
+    name: 
+      - sysstat
+      - tree
+    state: present
