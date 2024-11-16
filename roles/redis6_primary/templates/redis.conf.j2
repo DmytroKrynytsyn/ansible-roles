@@ -1,0 +1,13 @@
+# templates/redis.conf.j2
+
+bind {{ redis_bind_address }}
+port {{ redis_port }}
+
+# Replication settings
+replica-serve-stale-data yes
+repl-diskless-sync no
+repl-diskless-sync-delay 5
+stop-writes-on-bgsave-error no
+appendonly no
+save ""
+dir /tmp

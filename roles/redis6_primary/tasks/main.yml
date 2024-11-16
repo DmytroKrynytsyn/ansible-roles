@@ -1,0 +1,16 @@
+
+- name: Install Redis 6
+  dnf:
+    name: redis6
+    state: present
+
+- name: Configure Redis primary node
+  ansible.builtin.template:
+    src: redis.conf.j2
+    dest: /etc/redis6/redis6.conf
+
+- name: Start Redis
+  ansible.builtin.service:
+    name: redis6
+    state: started
+    enabled: true
