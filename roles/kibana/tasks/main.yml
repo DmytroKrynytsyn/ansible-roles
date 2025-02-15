@@ -1,2 +1,40 @@
----
-# tasks file for kibana
+- name: Initial update yum cache
+  yum:
+    update_cache: true
+
+- name: Add Kibana repository
+  ansible.builtin.yum_repository:
+    description: kibana repo
+    name: kibana.repo
+    baseurl: https://artifacts.elastic.co/packages/8.x/yum
+    gpgcheck: true
+    gpgkey: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    enabled: true
+
+- name: Install Kibana
+  ansible.builtin.yum:
+    name: kibana
+    state: present
+
+- name: Configure Kibana to connect to Elasticsearch
+  ansible.builtin.copy:
+    dest: /etc/kibana/kibana.yml
+    content: |
+      server.host: "0.0.0.0"
+      elasticsearch.hosts: ["http://{{ hostvars[inventory_hostname]['elasticsearch_ip'] }}:9200"]
+    owner: kibana
+    group: kibana
+    mode: '0644'
+  notify: Restart Kibana
+
+- name: Enable and start Kibana service
+  ansible.builtin.systemd:
+    name: kibana
+    enabled: true
+    state: started
+
+handlers:
+- name: Restart Kibana
+  ansible.builtin.systemd:
+    name: kibana
+    state: restarted

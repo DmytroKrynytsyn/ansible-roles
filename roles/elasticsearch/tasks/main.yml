@@ -1,2 +1,31 @@
----
-# tasks file for elasticsearch
+- name: Initial update yum cache
+  yum:
+    update_cache: true
+
+- name: Add Elasticsearch YUM repository
+  ansible.builtin.yum_repository:
+    name: elasticsearch
+    description: Elasticsearch repository
+    baseurl: https://artifacts.elastic.co/packages/{{ es_version }}/yum
+    gpgcheck: true
+    gpgkey: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    enabled: true
+
+- name: Install Elasticsearch
+  ansible.builtin.yum:
+    name: elasticsearch
+    state: present
+
+- name: Configure Elasticsearch for single node
+  ansible.builtin.template:
+    src: ../templates/elasticsearch.yml.j2
+    dest: /etc/elasticsearch/elasticsearch.yml
+    owner: elasticsearch
+    group: elasticsearch
+    mode: '0644'
+
+- name: Ensure Elasticsearch service is restarted and enabled
+  ansible.builtin.systemd:
+    name: elasticsearch
+    enabled: true
+    state: restarted

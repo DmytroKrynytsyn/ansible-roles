@@ -1,2 +1,39 @@
----
-# tasks file for milvusdb
+- name: Ensure the local directory exists
+  file:
+    path: "{{ local_db_files_location }}"
+    state: directory
+    mode: '0777'
+
+- name: Download standalone_embed.sh milvus script
+  get_url:
+    url: "{{ milvus_script_url }}"
+    dest: "{{ milvus_script_location }}/standalone_embed.sh"
+    mode: '0755'
+
+- name: Create the vector-db-start systemd service file from template
+  template:
+    src: ../templates/vector-db-start.service.j2
+    dest: /etc/systemd/system/vector-db-start.service
+    mode: '0644'
+
+- name: Create the vector-db-stop systemd service file from template
+  template:
+    src: ../templates/vector-db-stop.service.j2
+    dest: /etc/systemd/system/vector-db-stop.service
+    mode: '0644'
+  
+- name: Reload systemd to pick up the new services
+  command: systemctl daemon-reload
+  become: true
+
+- name: Enable the vector-db-start service
+  systemd:
+    name: vector-db-start.service
+    enabled: yetrues
+    state: started
+
+- name: Enable the vector-db-stop service
+  systemd:
+    name: vector-db-stop.service
+    enabled: true
+    state: started

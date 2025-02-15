@@ -1,2 +1,3 @@
----
-# defaults file for fluentbit
+fluentd_host: "{{ hostvars[inventory_hostname]['fluentd_ip'] }}"
+fluentd_port: "24224"
+fluentbit_version: "1.9.4"

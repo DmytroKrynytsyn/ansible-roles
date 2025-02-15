@@ -1,2 +1,70 @@
----
-# tasks file for fluentbit
+- name: Initial update yum cache
+  yum:
+    update_cache: true
+
+- name: Install dependencies (Amazon Linux 2)
+  ansible.builtin.yum:
+    name:
+      - wget
+      - systemd
+    state: present
+
+- name: Create YUM repository configuration for Fluent Bit
+  ansible.builtin.yum_repository:
+    name: fluent-bit
+    description: Fluent Bit
+    baseurl: https://packages.fluentbit.io/amazonlinux/2023/
+    gpgcheck: true
+    gpgkey: https://packages.fluentbit.io/fluentbit.key
+    enabled: true
+
+- name: Install Fluent Bit package
+  ansible.builtin.yum:
+    name: fluent-bit
+    state: present
+
+- name: Start and enable Fluent Bit service
+  ansible.builtin.systemd:
+    name: fluent-bit
+    enabled: true
+    state: started
+
+- name: Ensure /etc/td-agent-bit directory exists
+  ansible.builtin.file:
+    path: /etc/fluent-bit sfl
+    state: directory
+    mode: '0755'
+
+- name: Configure Fluent Bit to read system logs and send them to Fluentd
+  ansible.builtin.copy:
+    dest: /etc/fluent-bit/fluent-bit.conf
+    content: |
+      [SERVICE]
+          Flush        1
+          Log_Level    info
+          Daemon       off
+          Parsers_File parsers.conf
+
+      [INPUT]
+          Name         systemd
+          Tag          host.*
+
+      [FILTER]
+          Name         modify
+          Match        *
+          Add          hostname ${HOSTNAME}
+
+      [OUTPUT]
+          Name         forward
+          Match        *
+          Host         {{ fluentd_host }}
+          Port         {{ fluentd_port }}
+          Retry_Limit  False
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Restart Fluent Bit to apply configuration
+  ansible.builtin.systemd:
+    name: fluent-bit
+    state: restarted

@@ -1,6 +1,6 @@
 - name: Initial update yum cache
   yum:
-    update_cache: yes
+    update_cache: true
 
 - name: Install wget
   yum:
@@ -16,18 +16,18 @@
   unarchive:
     src: "/tmp/prometheus-{{ prometheus_version }}.tar.gz"
     dest: "/tmp"
-    remote_src: yes
+    remote_src: true
 
 - name: Move Prometheus binaries
   copy:
-    remote_src: yes
+    remote_src: true
     src: "/tmp/prometheus-{{ prometheus_version }}.linux-amd64/prometheus"
     dest: "{{ prometheus_install_dir }}/prometheus"
     mode: '0755'
 
 - name: Move Promtool binary
   copy:
-    remote_src: yes
+    remote_src: true
     src: "/tmp/prometheus-{{ prometheus_version }}.linux-amd64/promtool"
     dest: "{{ prometheus_install_dir }}/promtool"
     mode: '0755'
@@ -60,7 +60,7 @@
     path: "{{ item }}"
     owner: "prometheus"
     group: "prometheus"
-    recurse: yes
+    recurse: true
   loop:
     - "{{ prometheus_config_dir }}"
     - "{{ prometheus_data_dir }}"
@@ -78,4 +78,4 @@
   systemd:
     name: prometheus
     state: started
-    enabled: yes
+    enabled: true

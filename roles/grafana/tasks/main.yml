@@ -1,12 +1,12 @@
 - name: Initial update yum cache
-      yum:
-        update_cache: yes
+  yum:
+    update_cache: true
 
 - name: Download Grafana GPG key
-      ansible.builtin.get_url:
-        url: https://rpm.grafana.com/gpg.key
-        dest: /tmp/gpg.key
-        mode: '0644'
+  ansible.builtin.get_url:
+    url: https://rpm.grafana.com/gpg.key
+    dest: /tmp/gpg.key
+    mode: '0644'
 
 - name: Import Grafana GPG key
   ansible.builtin.rpm_key:
@@ -22,7 +22,7 @@
   systemd:
     name: grafana-server
     state: started
-    enabled: yes
+    enabled: true
 
 - name: Create directories for provisioning
   file:

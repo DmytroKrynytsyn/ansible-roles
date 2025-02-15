@@ -1,2 +1,4 @@
----
-# defaults file for elasticsearch
+es_version: "8.x"  # Specify Elasticsearch version
+es_cluster_name: "my-cluster"
+es_node_name: "node-1"
+es_network_host: "0.0.0.0"  # Listen on all interfaces

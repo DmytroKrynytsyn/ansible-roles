@@ -1,2 +1,5 @@
----
-# defaults file for milvusdb
+s3_bucket_name: "dkedu"
+s3_folder_name: "rag1"
+local_db_files_location: "/volumes/milvus"
+milvus_script_location: "/usr/local/bin"
+milvus_script_url: "https://raw.githubusercontent.com/milvus-io/milvus/master/scripts/standalone_embed.sh"

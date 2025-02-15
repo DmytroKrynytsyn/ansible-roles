@@ -1,2 +1,52 @@
----
-# tasks file for fluentd
+- name: Initial update yum cache
+  yum:
+    update_cache: true
+
+- name: Install dependencies
+  ansible.builtin.yum:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - tar
+    - gcc
+    - gcc-c++
+    - make
+
+- name: Install Fluentd using the Treasure Data script
+  ansible.builtin.shell: >
+    curl -fsSL https://toolbelt.treasuredata.com/sh/install-amazon2023-fluent-package5-lts.sh | sh
+
+- name: Install Fluentd (td-agent)
+  ansible.builtin.yum:
+    name: td-agent
+    state: present
+
+
+- name: Configure Fluentd to accept logs from Fluent Bit and forward to Elasticsearch
+  ansible.builtin.copy:
+    dest: /etc/fluent/fluentd.conf
+    content: |
+      <source>
+        @type forward
+        port {{ fluentd_port }}
+        bind 0.0.0.0
+      </source>
+      # <match **>
+      #   @type stdout
+      # </match>
+      <match **>
+        @type elasticsearch
+        host {{ elasticsearch_host }}
+        port {{ elasticsearch_port }}
+        logstash_format true
+        include_tag_key true
+        type_name fluentd
+        logstash_prefix fluentd
+      </match>
+    mode: '0644'
+
+- name: Start and enable Fluentd (td-agent) service
+  ansible.builtin.systemd:
+    name: fluentd
+    enabled: true
+    state: started
