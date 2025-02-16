@@ -29,7 +29,7 @@
 - name: Enable the vector-db-start service
   systemd:
     name: vector-db-start.service
-    enabled: yetrues
+    enabled: true
     state: started
 
 - name: Enable the vector-db-stop service
