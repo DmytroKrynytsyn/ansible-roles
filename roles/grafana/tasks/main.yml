@@ -57,7 +57,7 @@
   ansible.builtin.lineinfile:
     path: /etc/hosts
     state: present
-    line: "{{ hostvars[inventory_hostname]['prometheus_ip'] }} prometheus"
+    line: "{{ prometheus_ip }} prometheus"
 
 - name: Restart Grafana to apply changes
   systemd:

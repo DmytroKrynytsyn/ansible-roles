@@ -1,2 +1,2 @@
----
-# defaults file for dmytrokrynytsyn/components/roles/redis6_replica
+redis_primary_host: null
+redis_port: "6379"

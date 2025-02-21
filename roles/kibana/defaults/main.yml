@@ -1,2 +1,2 @@
----
-# defaults file for kibana
+elasticsearch_host: null
+elasticsearch_port: "9200"

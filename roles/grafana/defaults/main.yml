@@ -4,3 +4,4 @@ grafana_dashboards: /etc/grafana/provisioning/dashboards
 grafana_dashboard_files:
   - src: ../configs/grafana-system-metrics-dashboard.json
     dest: /var/lib/grafana/dashboards/system-metrics.json
+prometheus_ip: null
