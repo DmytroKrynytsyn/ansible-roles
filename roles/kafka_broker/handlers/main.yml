@@ -1,2 +1,4 @@
----
-# handlers file for dmytrokrynytsyn/components/roles/kafka_broker
+- name: Restart Kafka
+  systemd:
+    name: kafka
+    state: restarted

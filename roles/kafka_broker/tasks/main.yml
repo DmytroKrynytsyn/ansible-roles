@@ -1,5 +1,74 @@
----
-- name: Print message from kafka broker role
-  debug:
-    msg: "This is kafka_broker role in components"
-# tasks file for dmytrokrynytsyn/components/roles/kafka_broker
+- name: Install dependencies
+  dnf:
+    name:
+      - java-21-amazon-corretto
+      - wget
+      - tar
+    state: present
+
+- name: Set environment variable for a process
+  ansible.builtin.shell: |
+    export KAFKA_HEAP_OPTS="-Xms8g -Xmx12g"
+
+- name: Create Kafka user
+  user:
+    name: "{{ kafka_user }}"
+    state: present
+    shell: /sbin/nologin
+
+- name: Create Kafka data and log directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ kafka_user }}"
+    group: "{{ kafka_user }}"
+    mode: '0755'
+    recurse: true
+  loop:
+    - "{{ data_dir }}"
+    - "{{ log_dir }}"
+    - "{{ install_dir }}/config"
+
+- name: Download Kafka binaries
+  get_url:
+    url: "https://downloads.apache.org/kafka/{{ kafka_version }}/kafka_2.13-{{ kafka_version }}.tgz"
+    dest: "/tmp/kafka.tgz"
+  register: download_kafka
+
+- name: Extract Kafka binaries
+  unarchive:
+    src: "/tmp/kafka.tgz"
+    dest: "{{ install_dir }}"
+    remote_src: yes
+    extra_opts:
+      - --strip-components=1
+  # when: download_kafka.changed
+
+- name: Generate KRaft mode server.properties
+  template:
+    src: ../templates/server.properties.j2
+    dest: "{{ install_dir }}/config/kraft/server.properties"
+    owner: "{{ kafka_user }}"
+    group: "{{ kafka_user }}"
+    mode: '0644'
+
+- name: Format Kafka storage with KRaft cluster ID
+  command: >
+    {{ install_dir }}/bin/kafka-storage.sh format 
+    --cluster-id {{ cluster_id }}
+    --config {{ install_dir }}/config/kraft/server.properties
+  become_user: "{{ kafka_user }}"
+  args:
+    creates: "{{ data_dir }}/meta.properties"
+
+- name: Set up Kafka systemd service
+  template:
+    src: ../templates/kafka.service.j2
+    dest: /etc/systemd/system/kafka.service
+  notify: Restart Kafka
+
+- name: Reload systemd and start Kafka service
+  systemd:
+    name: kafka
+    enabled: true
+    state: started
