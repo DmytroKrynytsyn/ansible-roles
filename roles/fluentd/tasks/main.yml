@@ -1,7 +1,3 @@
-- name: Initial update yum cache
-  yum:
-    update_cache: true
-
 - name: Install dependencies
   ansible.builtin.yum:
     name: "{{ item }}"
