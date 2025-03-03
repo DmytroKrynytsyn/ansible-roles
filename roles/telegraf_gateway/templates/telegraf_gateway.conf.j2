@@ -1,0 +1,10 @@
+[[inputs.socket_listener]]
+service_address = "udp://:{{telegraf_gateway_input_port}}"
+
+[[outputs.prometheus_client]]
+## Address to listen on
+listen = ":{{telegraf_gateway_scrape_port}}"  # Port Prometheus will scrape
+
+## Metrics path that Prometheus will scrape
+path = "/metrics"
+

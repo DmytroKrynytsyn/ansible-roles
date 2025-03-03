@@ -1,0 +1,2 @@
+telegraf_gateway_input_port: "8089"
+telegraf_gateway_scrape_port: "9100"
