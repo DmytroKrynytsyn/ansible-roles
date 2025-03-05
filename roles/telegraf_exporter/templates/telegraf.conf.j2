@@ -1,7 +1,7 @@
 [[outputs.socket_writer]]
-  address = "udp://{{telegraf_gateway_ip}}:{{telegraf_gateway_port}}"
+  address = "tcp://{{telegraf_gateway_ip}}:{{telegraf_gateway_port}}"
 
-[[inputs.cpu]]  
+[[inputs.cpu]]
   percpu = true
   totalcpu = true
   collect_cpu_time = false

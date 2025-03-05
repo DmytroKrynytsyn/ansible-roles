@@ -1,10 +1,23 @@
 [[inputs.socket_listener]]
-service_address = "udp://:{{telegraf_gateway_input_port}}"
+service_address = "tcp://{{telegraf_gateway_ip}}:{{telegraf_gateway_input_port}}"
 
 [[outputs.prometheus_client]]
 ## Address to listen on
-listen = ":{{telegraf_gateway_scrape_port}}"  # Port Prometheus will scrape
+listen = "{{telegraf_gateway_ip}}:{{telegraf_gateway_scrape_port}}"  # Port Prometheus will scrape
 
 ## Metrics path that Prometheus will scrape
 path = "/metrics"
 
+[[inputs.cpu]]
+  percpu = true
+  totalcpu = true
+  collect_cpu_time = false
+
+[[inputs.mem]]
+[[inputs.disk]]
+[[inputs.swap]]
+[[inputs.system]]
+[[inputs.processes]]
+[[inputs.kernel]]
+[[inputs.diskio]]
+[[inputs.netstat]]
