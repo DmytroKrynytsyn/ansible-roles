@@ -1,6 +1,6 @@
 {
     "uid": "system-metrics",
-    "title": "System Metrics",
+    "title": "Node Exporter Metrics",
     "tags": ["system", "performance"],
     "timezone": "browser",
     "schemaVersion": 26,
